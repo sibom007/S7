@@ -4,7 +4,7 @@ import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import { firecrawl } from "@/lib/firecrawl";
 
 const google = createGoogleGenerativeAI({
-  apiKey: "AIzaSyC0AzqYRbpfWYOZHr3j_-QIDw2lLU-ASuY",
+  apiKey: "",
 });
 
 const URL_REGEX = /https?:\/\/[^\s]+/g;
