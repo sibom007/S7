@@ -96,7 +96,7 @@ export const ProjectView = () => {
             {lastProject?.map((lastProject) => {
               return (
                 <Button
-                  onClick={() => router.push(`/project/${lastProject._id}`)}
+                  onClick={() => router.push(`/projects/${lastProject._id}`)}
                   key={lastProject._id}
                   variant={"outline"}
                   className="h-full items-start justify-start p-4 bg-background border flex flex-col gap-6 rounded-none border-white/5!">
@@ -107,7 +107,9 @@ export const ProjectView = () => {
                       ) : (
                         <Globe2Icon className="size-4" />
                       )}
-                      <span className="text-sm">{lastProject.name}</span>
+                      <span className="text-sm truncate max-w-40">
+                        {lastProject.name}
+                      </span>
                     </h1>
                     <span>
                       <ArrowRight className="size-4 text-muted-foreground" />
