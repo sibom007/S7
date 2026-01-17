@@ -1,11 +1,13 @@
 "use client";
+
 import React from "react";
-import { ThemeProvider } from "./theme-provider";
-import { ConvexReactClient } from "convex/react";
+import { shadcn } from "@clerk/themes";
 import { useAuth } from "@clerk/clerk-react";
 import { ClerkProvider } from "@clerk/nextjs";
+import { ThemeProvider } from "./theme-provider";
 import { ConvexProviderWithClerk } from "convex/react-clerk";
-import { shadcn } from "@clerk/themes";
+import { Authenticated, AuthLoading, ConvexReactClient } from "convex/react";
+import { AuthLoadingView } from "@/feature/auth/components/auth-loading-view";
 
 const convex = new ConvexReactClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
 
@@ -21,7 +23,10 @@ export const Provider = ({ children }: { children: React.ReactNode }) => {
           disableTransitionOnChange
           enableSystem
           attribute={"class"}>
-          {children}
+          <Authenticated>{children}</Authenticated>
+          <AuthLoading>
+            <AuthLoadingView />
+          </AuthLoading>
         </ThemeProvider>
       </ConvexProviderWithClerk>
     </ClerkProvider>

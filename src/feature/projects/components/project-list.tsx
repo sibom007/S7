@@ -1,4 +1,4 @@
-import { AlertCircleIcon, Loader2Icon } from "lucide-react";
+import { AlertCircleIcon, Globe2Icon, Loader2Icon } from "lucide-react";
 import { useProjectsPartial } from "../hooks/use-projects";
 import { Spinner } from "@/components/ui/spinner";
 import { FaGithub } from "react-icons/fa";
@@ -25,7 +25,9 @@ export const getProjectIcon = (project: Doc<"projects">) => {
     return <AlertCircleIcon className="size-3.5 text-muted-foreground" />;
   }
   if (project.importStatus === "importing") {
-    return <Loader2Icon className="size-3.5 text-muted-foreground" />;
+    return (
+      <Loader2Icon className="size-3.5 animate-spin text-muted-foreground" />
+    );
   }
 };
 
@@ -61,13 +63,18 @@ export const ProjectsList = ({ onViewAll }: Props) => {
         {projects?.map((project) => {
           return (
             <button
-              onClick={() => router.push(`/project/${project._id}`)}
+              onClick={() => router.push(`/projects/${project._id}`)}
               key={project._id}
               className="flex justify-between text-muted-foreground hover:text-foreground duration-500">
               <div className="flex gap-4 items-center">
-                {getProjectIcon(project)}
+                {project.exportRepoUrl && getProjectIcon(project)}
+                {project.exportRepoUrl ? (
+                  <FaGithub className="size-3.5 text-muted-foreground" />
+                ) : (
+                  <Globe2Icon className="size-3.5 text-muted-foreground" />
+                )}
 
-                <h2>{project.name}</h2>
+                <h2 className="truncate max-w-62">{project.name}</h2>
               </div>
               <span>{formatDistanceToNow(project.updateAt)}</span>
             </button>
