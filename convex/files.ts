@@ -1,7 +1,7 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 import { verifyAuth } from "./auth";
-import { Id } from "./_generated/dataModel";
+import { Doc, Id } from "./_generated/dataModel";
 
 export const get = query({
   args: { projectId: v.id("projects") },
@@ -320,5 +320,47 @@ export const updateFile = mutation({
     await ctx.db.patch("projects", file.projectId, {
       updateAt: Date.now(),
     });
+  },
+});
+
+export const getFilePath = query({
+  args: {
+    id: v.id("files"),
+  },
+  handler: async (ctx, args) => {
+    const identaty = await verifyAuth(ctx);
+
+    const file = await ctx.db.get("files", args.id);
+
+    if (!file) {
+      throw new Error("file Not Found!");
+    }
+
+    const project = await ctx.db.get("projects", file.projectId);
+
+    if (!project) {
+      throw new Error("Project Not Found!");
+    }
+
+    if (project.ownerId !== identaty.subject) {
+      throw new Error("UnAuthorized access to this project");
+    }
+
+    const path: { _id: string; name: string }[] = [];
+    let currntId: Id<"files"> | undefined = args.id;
+
+    while (currntId) {
+      const file = (await ctx.db.get("files", currntId)) as
+        | Doc<"files">
+        | undefined;
+
+      if (!file) {
+        return;
+      }
+
+      path.unshift({ _id: file._id, name: file.name });
+      currntId = file.parentId;
+    }
+    return path;
   },
 });

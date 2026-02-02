@@ -36,7 +36,7 @@ export const ProjectIdLayout = ({
             snap>
             Convercation side bar
           </Allotment.Pane>
-          <Allotment.Pane>{children}</Allotment.Pane>
+          <Allotment.Pane className="min-h-0">{children}</Allotment.Pane>
         </Allotment>
       </div>
     </div>

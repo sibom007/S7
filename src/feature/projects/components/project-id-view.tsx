@@ -8,6 +8,7 @@ import { FaGithub } from "react-icons/fa";
 import { Allotment } from "allotment";
 import "allotment/dist/style.css";
 import { FileExplorer } from "./file-explorer";
+import { FileEditorView } from "../../editor/components/editor-view";
 
 const MIN_SIDEBAR_WIDTH = 200;
 const MAX_SIDEBAR_WIDTH = 800;
@@ -18,8 +19,8 @@ export const ProjectIdView = ({ projectId }: { projectId: projectId }) => {
   const [activeView, setActiveView] = useState<"editor" | "preview">("editor");
 
   return (
-    <div>
-      <nav className=" border-b h-11 flex items-center">
+    <div className="h-full flex flex-col min-h-0">
+      <nav className="shrink-0 border-b h-11 flex items-center">
         <Tab
           label="code"
           onClick={() => setActiveView("editor")}
@@ -38,26 +39,29 @@ export const ProjectIdView = ({ projectId }: { projectId: projectId }) => {
         </div>
       </nav>
 
-      <div className="flex-1 relative h-screen">
+      <div className="flex-1 min-h-0 relative">
         <div
           className={cn(
             "absolute inset-0",
             activeView === "editor" ? "visible" : "invisible",
           )}>
-          <Allotment defaultSizes={[DEFAULT_SIDEBAR_WIDTH]}>
+          <Allotment defaultSizes={[DEFAULT_SIDEBAR_WIDTH]} className="h-full">
             <Allotment.Pane
               snap
-              maxSize={MAX_SIDEBAR_WIDTH}
-              minSize={MIN_SIDEBAR_WIDTH}
+              // maxSize={MAX_SIDEBAR_WIDTH}
+              // minSize={MIN_SIDEBAR_WIDTH}
+              minSize={200}
+              maxSize={800}
               preferredSize={DEFAULT_MAIN_SIZE}>
               <FileExplorer projectId={projectId} />
             </Allotment.Pane>
             <Allotment.Pane
               snap
-              maxSize={MAX_SIDEBAR_WIDTH}
-              minSize={MIN_SIDEBAR_WIDTH}
+              // maxSize={MAX_SIDEBAR_WIDTH}
+              // minSize={MIN_SIDEBAR_WIDTH}
+              minSize={300}
               preferredSize={DEFAULT_MAIN_SIZE}>
-              Flie asda
+              <FileEditorView projectId={projectId} />
             </Allotment.Pane>
           </Allotment>
         </div>
