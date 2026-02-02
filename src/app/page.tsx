@@ -1,6 +1,6 @@
 "use client";
 
-import { ProjectView } from "@/feature/projects/components/project-view";
+import { ProjectView } from "../../project-view";
 
 export default function Home() {
   return <ProjectView />;

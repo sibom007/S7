@@ -4,8 +4,11 @@ import Image from "next/image";
 import { Sparkle, ArrowRight, Globe2Icon } from "lucide-react";
 import { FaGithub } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
-import { ProjectsList } from "./project-list";
-import { useCreateProject, useLastProjects } from "../hooks/use-projects";
+import { ProjectsList } from "./src/feature/projects/components/project-list";
+import {
+  useCreateProject,
+  useLastProjects,
+} from "./src/feature/projects/hooks/use-projects";
 import {
   Empty,
   EmptyDescription,
