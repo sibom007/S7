@@ -1,7 +1,7 @@
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { projectId } from "@/types";
 import { useEditor } from "../hooks/use-editor";
-import { Id } from "../../../../convex/_generated/dataModel";
+import { Id } from "@convex/_generated/dataModel";
 import { useFile } from "@/feature/projects/hooks/use-files";
 import { cn } from "@/lib/utils";
 import { Spinner } from "@/components/ui/spinner";

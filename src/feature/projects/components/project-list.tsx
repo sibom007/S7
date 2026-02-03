@@ -11,7 +11,7 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty";
 import { useRouter } from "next/navigation";
-import { Doc } from "../../../../convex/_generated/dataModel";
+import { Doc } from "@convex/_generated/dataModel";
 
 interface Props {
   onViewAll: () => void;

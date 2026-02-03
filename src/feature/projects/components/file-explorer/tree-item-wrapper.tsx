@@ -1,5 +1,5 @@
 import React from "react";
-import { Doc } from "../../../../../convex/_generated/dataModel";
+import { Doc } from "@convex/_generated/dataModel";
 import {
   ContextMenu,
   ContextMenuContent,

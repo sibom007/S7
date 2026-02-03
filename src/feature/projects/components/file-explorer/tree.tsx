@@ -5,7 +5,7 @@ import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { projectId } from "@/types";
 
-import { Doc } from "../../../../../convex/_generated/dataModel";
+import { Doc } from "@convex/_generated/dataModel";
 import {
   useCreateFile,
   useCreateFolder,
