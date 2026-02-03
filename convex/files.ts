@@ -50,7 +50,7 @@ export const getFile = query({
   },
 });
 
-export const getFolderContants = query({
+export const getFolderContents = query({
   args: {
     projectId: v.id("projects"),
     parentId: v.optional(v.id("files")),

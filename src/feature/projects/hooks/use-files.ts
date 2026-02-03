@@ -39,7 +39,7 @@ export const useFolderContents = ({
   enabled?: boolean;
 }) => {
   return useQuery(
-    api.files.getFolderContants,
+    api.files.getFolderContents,
     enabled ? { projectId, parentId } : "skip",
   );
 };
