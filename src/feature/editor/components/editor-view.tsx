@@ -6,13 +6,21 @@ import { useFile, useUpdateFile } from "@/feature/projects/hooks/use-files";
 import Image from "next/image";
 import { FileIcon } from "lucide-react";
 import { CodeEditor } from "./code-editor";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 
 export const FileEditorView = ({ projectId }: { projectId: projectId }) => {
   const { activeTabId } = useEditor(projectId);
   const activeFile = useFile(activeTabId);
   const updateFile = useUpdateFile();
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, [activeTabId]);
 
   return (
     <div className="h-full flex flex-col min-h-0">
