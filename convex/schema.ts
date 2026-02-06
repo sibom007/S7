@@ -36,4 +36,26 @@ export default defineSchema({
     .index("by_project", ["projectId"])
     .index("by_parentId", ["parentId"])
     .index("by_project_parent", ["projectId", "parentId"]),
+
+  conversations: defineTable({
+    projectId: v.id("projects"),
+    title: v.string(),
+    updateAt: v.number(),
+  }).index("by_project", ["projectId"]),
+  messages: defineTable({
+    projectId: v.id("projects"),
+    conversationId: v.id("conversations"),
+    role: v.union(v.literal("user"), v.literal("assistant")),
+    status: v.optional(
+      v.union(
+        v.literal("processing"),
+        v.literal("completed"),
+        v.literal("cancelled"),
+      ),
+    ),
+    content: v.string(),
+    updateAt: v.number(),
+  })
+    .index("by_project_status", ["projectId", "status"])
+    .index("by_conversation", ["conversationId"]),
 });
