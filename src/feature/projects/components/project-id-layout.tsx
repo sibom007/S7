@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { Navbar } from "./project-navbar";
 import { projectId } from "@/types";
 import { Allotment } from "allotment";
 
-import "allotment/dist/style.css";
+
+import { ConvercationSidebar } from "@/feature/conversations/components/conversition-sidebar";
 
 const MIN_SIDEBAR_WIDTH = 200;
 const MAX_SIDEBAR_WIDTH = 800;
@@ -34,7 +35,7 @@ export const ProjectIdLayout = ({
             maxSize={MAX_SIDEBAR_WIDTH}
             preferredSize={DEFAULT_CONVERSATION_SIDEBAR_WIDTH}
             snap>
-            Convercation side bar
+            <ConvercationSidebar projectId={projectId} />
           </Allotment.Pane>
           <Allotment.Pane className="min-h-0">{children}</Allotment.Pane>
         </Allotment>
