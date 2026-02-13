@@ -1,10 +1,10 @@
+import z from "zod";
 import { inngest } from "@/inngest/client";
-import { convex } from "@/lib/convex-client";
+import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { api } from "@convex/_generated/api";
+import { convex } from "@/lib/convex-client";
 import { Id } from "@convex/_generated/dataModel";
-import { NextResponse } from "next/server";
-import z from "zod";
 
 const requestSchema = z.object({
   conversationId: z.string(),
@@ -42,6 +42,33 @@ export const POST = async (request: Request) => {
 
   const projectId = conversation.projectId;
 
+  //   Find all prossessing messages in this project
+  const prossessingMessage = await convex.query(api.system.prossessingMessage, {
+    internalKey,
+    projectId: projectId,
+  });
+
+  if (prossessingMessage.length > 0) {
+    //   cancel All prossing message
+    await Promise.all(
+      prossessingMessage.map(async (msg) => {
+        await inngest.send({
+          name: "message/cancel",
+          data: {
+            messageId: msg._id,
+          },
+        });
+
+        await convex.mutation(api.system.updateMessageStatus, {
+          internalKey,
+          messageId: msg._id,
+          status: "cancelled",
+        });
+        return msg._id;
+      }),
+    );
+  }
+
   await convex.mutation(api.system.createMessage, {
     internalKey,
     conversationId: conversationId as Id<"conversations">,
@@ -64,6 +91,9 @@ export const POST = async (request: Request) => {
     name: "message/sent",
     data: {
       messageId: assistantId,
+      conversationId,
+      projectId,
+      message,
     },
   });
 

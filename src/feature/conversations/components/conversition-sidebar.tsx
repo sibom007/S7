@@ -32,6 +32,8 @@ import {
   MessageResponse,
 } from "@/components/ai-elements/message";
 import ky from "ky";
+import { PastConversationDialog } from "./past-conversation-dialog";
+import { DEFAULT_CONVERSATION_TITLE } from "../constant";
 
 export const ConvercationSidebar = ({
   projectId,
@@ -41,11 +43,13 @@ export const ConvercationSidebar = ({
   const [input, setInput] = useState("");
   const [selectedconversationId, setSelectedconversationId] =
     useState<Id<"conversations"> | null>(null);
+  const [pastConversationOpen, setPastConversationOpen] = useState(false);
   const createConvercation = useCreateConversation();
   const convercations = useConversations(projectId);
   const activeConversationId =
     selectedconversationId ?? convercations?.[0]?._id ?? null;
   const activeConversation = useConversation(activeConversationId);
+
   const convercationMessages = useMessages(activeConversationId);
 
   const isProssing = convercationMessages?.some(
@@ -56,7 +60,7 @@ export const ConvercationSidebar = ({
     try {
       const newConversationId = await createConvercation({
         projectId,
-        title: "New convo",
+        title: DEFAULT_CONVERSATION_TITLE,
       });
       setSelectedconversationId(newConversationId);
       return newConversationId;
@@ -65,9 +69,19 @@ export const ConvercationSidebar = ({
       return null;
     }
   };
+  const handleCancel = async () => {
+    try {
+      await ky.post("/api/messages/cancel", {
+        json: { projectId },
+      });
+    } catch {
+      toast.error("unable to cancel request");
+    }
+  };
 
   const handleSubmit = async (message: PromptInputMessage) => {
     if (isProssing && !message.text) {
+      await handleCancel();
       setInput("");
       return;
     }
@@ -94,74 +108,89 @@ export const ConvercationSidebar = ({
   };
 
   return (
-    <div className=" flex flex-col h-full">
-      <div className="h-10.75 flex items-center justify-between border-b-2">
-        <div className="text-sm truncate pl-3">
-          {activeConversation?.title ?? "New Conversation"}
+    <>
+      <PastConversationDialog
+        open={pastConversationOpen}
+        onOpenChange={setPastConversationOpen}
+        projectId={projectId}
+        onSelect={setSelectedconversationId}
+      />
+      <div className=" flex flex-col h-full">
+        <div className="h-10.75 flex items-center justify-between border-b-2">
+          <div className="text-sm truncate pl-3">
+            {activeConversation?.title ?? "New Conversation"}
+          </div>
+          <div className=" flex  items-center px-1 gap-3">
+            <Button
+              onClick={() => setPastConversationOpen(!pastConversationOpen)}
+              variant={"outline"}
+              size={"icon-xs"}>
+              <HistoryIcon className="size-3.5" />
+            </Button>
+            <Button
+              onClick={handleCreateConvercation}
+              variant={"outline"}
+              size={"icon-xs"}>
+              <PlusIcon className="size-3.5" />
+            </Button>
+          </div>
         </div>
-        <div className=" flex  items-center px-1 gap-3">
-          <Button variant={"outline"} size={"icon-xs"}>
-            <HistoryIcon className="size-3.5" />
-          </Button>
-          <Button
-            onClick={handleCreateConvercation}
-            variant={"outline"}
-            size={"icon-xs"}>
-            <PlusIcon className="size-3.5" />
-          </Button>
+        <Conversation className="flex">
+          <ConversationContent>
+            {convercationMessages?.map((message, messageIndex) => (
+              <Message key={message._id} from={message.role}>
+                <MessageContent>
+                  {message.status == "processing" ? (
+                    <div className="flex items-center gap-2 text-muted-foreground">
+                      <LoaderIcon className="size-4 animate-spin" />
+                      Thinking...
+                    </div>
+                  ) : message.status == "cancelled" ? (
+                    <p className="text-muted-foreground italic">
+                      Request cancelled
+                    </p>
+                  ) : (
+                    <MessageResponse>{message.content}</MessageResponse>
+                  )}
+                </MessageContent>
+                {message.role === "assistant" &&
+                  message.status === "completed" &&
+                  messageIndex === (convercationMessages?.length ?? 0) - 1 && (
+                    <MessageActions>
+                      <MessageAction
+                        label="Copy"
+                        onClick={() => {
+                          navigator.clipboard.writeText(message.content);
+                        }}>
+                        <CopyIcon className="size-3" />
+                      </MessageAction>
+                    </MessageActions>
+                  )}
+              </Message>
+            ))}
+          </ConversationContent>
+          <ConversationScrollButton />
+        </Conversation>
+        <div className="p-3">
+          <PromptInput onSubmit={handleSubmit} className="mt-2">
+            <PromptInputBody>
+              <PromptInputTextarea
+                onChange={(e) => setInput(e.target.value)}
+                value={input}
+                disabled={isProssing}
+                placeholder="Ask S7 anythink..."
+              />
+            </PromptInputBody>
+            <PromptInputFooter>
+              <PromptInputTools />
+              <PromptInputSubmit
+                disabled={isProssing ? false : !input}
+                status={isProssing ? "streaming" : undefined}
+              />
+            </PromptInputFooter>
+          </PromptInput>
         </div>
       </div>
-      <Conversation className="flex">
-        <ConversationContent>
-          {convercationMessages?.map((message, messageIndex) => (
-            <Message key={message._id} from={message.role}>
-              <MessageContent>
-                {message.status == "processing" ? (
-                  <div className="flex items-center gap-2 text-muted-foreground">
-                    <LoaderIcon className="size-4 animate-spin" />
-                    Thinking...
-                  </div>
-                ) : (
-                  <MessageResponse>{message.content}</MessageResponse>
-                )}
-              </MessageContent>
-              {message.role === "assistant" &&
-                message.status === "completed" &&
-                messageIndex === (convercationMessages?.length ?? 0) - 1 && (
-                  <MessageActions>
-                    <MessageAction
-                      label="Copy"
-                      onClick={() => {
-                        navigator.clipboard.writeText(message.content);
-                      }}>
-                      <CopyIcon className="size-3" />
-                    </MessageAction>
-                  </MessageActions>
-                )}
-            </Message>
-          ))}
-        </ConversationContent>
-        <ConversationScrollButton />
-      </Conversation>
-      <div className="p-3">
-        <PromptInput onSubmit={handleSubmit} className="mt-2">
-          <PromptInputBody>
-            <PromptInputTextarea
-              onChange={(e) => setInput(e.target.value)}
-              value={input}
-              disabled={isProssing}
-              placeholder="Ask S7 anythink..."
-            />
-          </PromptInputBody>
-          <PromptInputFooter>
-            <PromptInputTools />
-            <PromptInputSubmit
-              disabled={isProssing ? false : !input}
-              status={isProssing ? "streaming" : undefined}
-            />
-          </PromptInputFooter>
-        </PromptInput>
-      </div>
-    </div>
+    </>
   );
 };
