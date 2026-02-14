@@ -108,7 +108,7 @@ export async function POST(request: Request) {
       .replace("{instruction}", documentationContext);
 
     const { output } = await generateText({
-      model: openrouter("arcee-ai/trinity-large-preview:free"),
+      model: openrouter("openrouter/aurora-alpha"),
       output: Output.object({ schema: quickEditSchema }),
       prompt,
       maxRetries: 0,

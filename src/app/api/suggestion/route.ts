@@ -102,7 +102,7 @@ export async function POST(request: Request) {
     .replace("{lineNumber}", lineNumber);
 
   const { output } = await generateText({
-    model: openrouter("arcee-ai/trinity-large-preview:free"),
+    model: openrouter("openrouter/aurora-alpha"),
     output: Output.object({ schema: suggestionSchema }),
     prompt,
     maxRetries: 0,

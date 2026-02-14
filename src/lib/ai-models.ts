@@ -6,7 +6,7 @@ export const openrouter = createOpenRouter({
 });
 
 export const OpenAi = openai({
-  model: "arcee-ai/trinity-large-preview:free",
+  model: "openrouter/aurora-alpha",
   apiKey: process.env.OPEN_ROUTER_API_KEY,
   baseUrl: "https://openrouter.ai/api/v1",
 });
