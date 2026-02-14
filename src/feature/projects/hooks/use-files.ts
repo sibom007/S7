@@ -6,6 +6,9 @@ import { Id } from "@convex/_generated/dataModel";
 export const useFile = (fileId: Id<"files"> | null) => {
   return useQuery(api.files.getFile, fileId ? { id: fileId } : "skip");
 };
+export const useFiles = (projectId: Id<"projects"> | null) => {
+  return useQuery(api.files.get, projectId ? { projectId } : "skip");
+};
 export const useFilePath = (fileId: Id<"files"> | null) => {
   return useQuery(
     api.files.getFilePath,
@@ -28,7 +31,6 @@ export const useRenameFile = () => {
 export const useDeleteFile = () => {
   return useMutation(api.files.deleteFile);
 };
-
 export const useFolderContents = ({
   projectId,
   enabled,

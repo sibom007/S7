@@ -26,3 +26,7 @@ export const useProject = (projectId: projectId) => {
 export const useRename = () => {
   return useMutation(api.projects.rename);
 };
+
+export const useUpdateProjectSettings = () => {
+  return useMutation(api.projects.updateSettings);
+};

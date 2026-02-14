@@ -109,7 +109,7 @@ export const processMessage = inngest.createFunction(
         name: "title-generator",
         system: TITLE_GENERATOR_SYSTEM_PROMPT,
         model: openai({
-          model: "arcee-ai/trinity-large-preview:free",
+          model: "openrouter/aurora-alpha",
           apiKey: process.env.OPEN_ROUTER_API_KEY,
           baseUrl: "https://openrouter.ai/api/v1",
         }),
@@ -149,7 +149,7 @@ export const processMessage = inngest.createFunction(
       description: "An expert Ai coding assistant",
       system: systemPrompt,
       model: openai({
-        model: "arcee-ai/trinity-large-preview:free",
+        model: "openrouter/aurora-alpha",
         apiKey: process.env.OPEN_ROUTER_API_KEY,
         baseUrl: "https://openrouter.ai/api/v1",
       }),

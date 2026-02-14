@@ -20,7 +20,7 @@ export const buildFileTree = (files: FileDoc[]): FileSystemTree => {
       if (!parent) break;
       parts.unshift(parent.name);
       parentId = parent.parentId;
-    }
+    };
 
     return parts;
   };
@@ -55,23 +55,11 @@ export const buildFileTree = (files: FileDoc[]): FileSystemTree => {
 };
 
 /**
- * Get the project root path inside the WebContainer (where package.json lives).
- * If the tree has a single top-level directory, that is the project root; otherwise "/".
- */
-export const getProjectRoot = (tree: FileSystemTree): string => {
-  const keys = Object.keys(tree);
-  if (keys.length !== 1) return "/";
-  const only = tree[keys[0]];
-  if (only && "directory" in only) return `/${keys[0]}`;
-  return "/";
-};
-
-/**
  * Get full path for a file by traversing parent chain
  */
 export const getFilePath = (
   file: FileDoc,
-  filesMap: Map<Id<"files">, FileDoc>,
+  filesMap: Map<Id<"files">, FileDoc>
 ): string => {
   const parts: string[] = [file.name];
   let parentId = file.parentId;
