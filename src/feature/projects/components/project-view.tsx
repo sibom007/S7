@@ -4,25 +4,26 @@ import Image from "next/image";
 import { Sparkle, ArrowRight, Globe2Icon } from "lucide-react";
 import { FaGithub } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
-import { ProjectsList } from "./src/feature/projects/components/project-list";
-import {
-  useCreateProject,
-  useLastProjects,
-} from "./src/feature/projects/hooks/use-projects";
+import { ProjectsList } from "./project-list";
+import { useCreateProject, useLastProjects } from "../hooks/use-projects";
 import {
   Empty,
   EmptyDescription,
   EmptyHeader,
   EmptyTitle,
 } from "@/components/ui/empty";
+import { Kbd } from "@/components/ui/kbd";
+
 import { formatDistanceToNow } from "date-fns";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { ProjectCommandDialog } from "@/components/project-command-dialog";
 import { useShortcut } from "@/hooks/use-shortcut";
+import { ImportGithubDialog } from "./import-github-dialog";
 
 export const ProjectView = () => {
   const [isOpen, setIsopen] = useState(false);
+  const [isOpenImportGitHub, setIsOpenImportGithub] = useState(false);
   const router = useRouter();
   const createProject = useCreateProject();
   const lastProject = useLastProjects();
@@ -34,9 +35,17 @@ export const ProjectView = () => {
   useShortcut({ key: "k", ctrl: true }, () => {
     setIsopen(!isOpen);
   });
+  useShortcut({ key: "b", ctrl: true }, () => {
+    setIsOpenImportGithub(!isOpenImportGitHub);
+  });
+
   return (
     <>
       <ProjectCommandDialog open={isOpen} onOpenChange={setIsopen} />
+      <ImportGithubDialog
+        open={isOpenImportGitHub}
+        onOpenChange={setIsOpenImportGithub}
+      />
       <div className="min-h-screen bg-sidebar flex flex-col items-center justify-center p-6 md:p-16">
         <div className="w-full max-w-sm mx-auto flex flex-col gap-4 items-center">
           <div className="flex items-center justify-between w-full">
@@ -61,7 +70,7 @@ export const ProjectView = () => {
                 className="h-full items-start justify-start p-4 bg-background border flex flex-col gap-6 rounded-none border-white/5!">
                 <div className="flex items-center justify-between w-full p-1">
                   <Sparkle className="size-4" />
-                  <kbd className="bg-accent p-0.5 rounded">Ctrl+J</kbd>
+                  <Kbd className="bg-muted-foreground/10">Ctrl + J</Kbd>
                 </div>
                 <div>
                   <span className="text-sm">New</span>
@@ -69,10 +78,15 @@ export const ProjectView = () => {
               </Button>
               <Button
                 variant={"outline"}
-                className="h-full items-start justify-start p-4 bg-background border flex flex-col gap-6 rounded-none border-white/5!">
+                className="h-full items-start justify-start p-4 bg-background border flex flex-col gap-6 rounded-none border-white/5!"
+                onClick={() => setIsOpenImportGithub(true)}>
                 <div className="flex items-center justify-between w-full p-1">
                   <FaGithub className="size-4" />
-                  <kbd className="bg-accent p-0.5 rounded">Ctrl+I</kbd>
+                  <div className="flex flex-col items-center gap-4">
+                    <p className="text-muted-foreground text-sm">
+                      <Kbd className="bg-muted-foreground/10">Ctrl + B</Kbd>
+                    </p>
+                  </div>
                 </div>
                 <div>
                   <span className="text-sm">Import</span>
@@ -129,7 +143,7 @@ export const ProjectView = () => {
           </div>
 
           {/* Recent Projects */}
-          <ProjectsList onViewAll={() => setIsopen(true)} />
+          <ProjectsList onViewAll={() => setIsopen(!isOpen)} />
         </div>
       </div>
     </>

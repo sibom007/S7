@@ -17,7 +17,7 @@ export const POST = async (request: Request) => {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const internalKey = process.env.CONVEX_INTERNAL_KEY;
+  const internalKey = process.env.S7_CONVEX_INTERNAL_KEY;
   if (!internalKey) {
     return NextResponse.json(
       { error: "Internal key not configured" },
@@ -43,10 +43,13 @@ export const POST = async (request: Request) => {
   const projectId = conversation.projectId;
 
   //   Find all prossessing messages in this project
-  const prossessingMessage = await convex.query(api.system.prossessingMessage, {
-    internalKey,
-    projectId: projectId,
-  });
+  const prossessingMessage = await convex.query(
+    api.system.getProcessingMessages,
+    {
+      internalKey,
+      projectId: projectId,
+    },
+  );
 
   if (prossessingMessage.length > 0) {
     //   cancel All prossing message

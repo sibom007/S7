@@ -38,7 +38,7 @@ export const processMessage = inngest.createFunction(
     onFailure: async ({ event, step }) => {
       const { messageId } = event.data.event.data as MessageEvent;
 
-      const internalKey = process.env.CONVEX_INTERNAL_KEY;
+      const internalKey = process.env.S7_CONVEX_INTERNAL_KEY;
       if (internalKey) {
         await step.run("update-message-on-failure", async () => {
           await convex.mutation(api.system.updateMessageContent, {
@@ -58,7 +58,7 @@ export const processMessage = inngest.createFunction(
     const { conversationId, message, messageId, projectId } =
       event.data as MessageEvent;
 
-    const internalKey = process.env.CONVEX_INTERNAL_KEY;
+    const internalKey = process.env.S7_CONVEX_INTERNAL_KEY;
     if (!internalKey) {
       throw new NonRetriableError("Internal key not configured");
     }
