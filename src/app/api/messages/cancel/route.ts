@@ -20,7 +20,7 @@ export async function POST(request: Request) {
   const body = await request.json();
   const { projectId } = requestSchema.parse(body);
 
-  const internalKey = process.env.CONVEX_INTERNAL_KEY!;
+  const internalKey = process.env.S7_CONVEX_INTERNAL_KEY!;
   if (!internalKey) {
     return NextResponse.json(
       { error: "Internal key not configured" },
@@ -29,10 +29,13 @@ export async function POST(request: Request) {
   }
 
   //   Find all prossessing messages in this project
-  const prossessingMessage = await convex.query(api.system.prossessingMessage, {
-    internalKey,
-    projectId: projectId as Id<"projects">,
-  });
+  const prossessingMessage = await convex.query(
+    api.system.getProcessingMessages,
+    {
+      internalKey,
+      projectId: projectId as Id<"projects">,
+    },
+  );
 
   if (!prossessingMessage) {
     return NextResponse.json({ success: true, cancelled: false, status: 500 });

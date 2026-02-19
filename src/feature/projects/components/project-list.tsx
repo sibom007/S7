@@ -12,6 +12,8 @@ import {
 } from "@/components/ui/empty";
 import { useRouter } from "next/navigation";
 import { Doc } from "@convex/_generated/dataModel";
+import { Kbd } from "@/components/ui/kbd";
+import { useShortcut } from "@/hooks/use-shortcut";
 
 interface Props {
   onViewAll: () => void;
@@ -35,14 +37,20 @@ export const ProjectsList = ({ onViewAll }: Props) => {
   const router = useRouter();
   const projects = useProjectsPartial(5);
 
+  useShortcut({ key: "i", ctrl: true }, () => {
+    onViewAll();
+  });
+
   return (
     <>
       <div className="flex flex-col gap-4 w-full">
         <div className="flex justify-between">
           <h1 className="text-muted-foreground">Recent projects</h1>
           <div className="flex gap-2">
-            <button onClick={onViewAll}>
-              View all <kbd className="bg-accent p-0.5 rounded">Ctrl+I</kbd>
+            <button
+              onClick={onViewAll}
+              className="border border-muted-foreground/30 p-1.5 rounded-2xl">
+              View all <Kbd className="bg-muted-foreground/10">Ctrl + I</Kbd>
             </button>
           </div>
         </div>
