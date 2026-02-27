@@ -32,28 +32,13 @@ Then open `http://localhost:3000` in your browser.
 
 ### Screenshots
 
-> You can now drop your images into `public/screenshots/` using the file names below.
-
-1. **Landing – Hero Section**  
-   `![Screenshot 1 – Landing Hero](https://res.cloudinary.com/db5d9twmj/image/upload/v1772165746/Screenshot_2026-02-27_101409_ywjk5h.png)`
-
-2. **Landing – Features Section**  
-   `![Screenshot 2 – Landing Features](public/screenshots/screenshot-02-landing-features.png)`
-
-3. **Landing – Pricing**  
-   `![Screenshot 3 – Pricing](https://res.cloudinary.com/db5d9twmj/image/upload/v1772165805/Screenshot_2026-02-27_101634_dmeqng.png)`
-
-4. **Projects Dashboard – Overview**  
-   `![Screenshot 4 – Projects Dashboard](https://res.cloudinary.com/db5d9twmj/image/upload/v1772165746/Screenshot_2026-02-27_101416_krkr5w.png)`
-
-5. **Projects Dashboard – New Project Dialog**  
-   `![Screenshot 5 – New Project Dialog](https://res.cloudinary.com/db5d9twmj/image/upload/v1772165862/Screenshot_2026-02-27_101729_y0aio6.png)`
-
-6. **Project Workspace – Editor & Preview**  
-   `![Screenshot 7 – Workspace Editor](https://res.cloudinary.com/db5d9twmj/image/upload/v1772165746/Screenshot_2026-02-27_101425_movpqb.png)`
-
-7. **Project Workspace – File Explorer**  
-   `![Screenshot 8 – File Explorer](https://res.cloudinary.com/db5d9twmj/image/upload/v1772165746/Screenshot_2026-02-27_101425_movpqb.png)`
-
-8. **Project Workspace – AI Tools Panel**  
-   `![Screenshot 9 – AI Tools](public/screenshots/screenshot-09-ai-tools.png)`
+| #                                          | Preview                                                                                                                                                                              |
+| ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 1. Landing – Hero Section                  | <img src="https://res.cloudinary.com/db5d9twmj/image/upload/v1772165746/Screenshot_2026-02-27_101409_ywjk5h.png" width="800" height="450" alt="Screenshot 1 – Landing Hero" />       |
+| 2. Landing – Features Section              | <img src="public/screenshots/screenshot-02-landing-features.png" width="800" height="450" alt="Screenshot 2 – Landing Features" />                                                   |
+| 3. Landing – Pricing                       | <img src="https://res.cloudinary.com/db5d9twmj/image/upload/v1772165805/Screenshot_2026-02-27_101634_dmeqng.png" width="800" height="450" alt="Screenshot 3 – Pricing" />            |
+| 4. Projects Dashboard – Overview           | <img src="https://res.cloudinary.com/db5d9twmj/image/upload/v1772165746/Screenshot_2026-02-27_101416_krkr5w.png" width="800" height="450" alt="Screenshot 4 – Projects Dashboard" /> |
+| 5. Projects Dashboard – New Project Dialog | <img src="https://res.cloudinary.com/db5d9twmj/image/upload/v1772165862/Screenshot_2026-02-27_101729_y0aio6.png" width="800" height="450" alt="Screenshot 5 – New Project Dialog" /> |
+| 6. Project Workspace – Editor & Preview    | <img src="https://res.cloudinary.com/db5d9twmj/image/upload/v1772165746/Screenshot_2026-02-27_101425_movpqb.png" width="800" height="450" alt="Screenshot 7 – Workspace Editor" />   |
+| 7. Project Workspace – File Explorer       | <img src="https://res.cloudinary.com/db5d9twmj/image/upload/v1772165746/Screenshot_2026-02-27_101425_movpqb.png" width="800" height="450" alt="Screenshot 8 – File Explorer" />      |
+| 8. Project Workspace – AI Tools Panel      | <img src="public/screenshots/screenshot-09-ai-tools.png" width="800" height="450" alt="Screenshot 9 – AI Tools" />                                                                   |
