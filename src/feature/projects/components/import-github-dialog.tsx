@@ -54,20 +54,57 @@ export const ImportGithubDialog = ({ onOpenChange, open }: Props) => {
         router.push(`/projects/${projectId}`);
       } catch (error) {
         if (error instanceof HTTPError) {
-          const body = await error.response.json<{ error: string }>();
-          if (body.error.includes("GitHub not connected")) {
-            toast.error("GitHub account not connected", {
-              action: {
-                label: "Connect",
-                onClick: () => openUserProfile(),
-              },
-            });
-            onOpenChange(false);
+          let body: { error?: string; code?: string } | null = null;
+
+          try {
+            body = await error.response.json();
+          } catch {}
+
+          // TEMP fallback until backend sends `code`
+          const errorMessage = body?.error ?? "";
+
+          if (error.response.status === 403) {
+            if (
+              body?.code === "PRO_REQUIRED" ||
+              errorMessage.includes("Pro plan required")
+            ) {
+              toast.error("Upgrade to import repositories", {
+                action: {
+                  label: "Upgrade",
+                  onClick: () => openUserProfile(),
+                },
+              });
+              onOpenChange(false);
+              return;
+            }
+
+            if (
+              body?.code === "GITHUB_NOT_CONNECTED" ||
+              errorMessage.includes("GitHub")
+            ) {
+              toast.error("GitHub account not connected", {
+                action: {
+                  label: "Connect",
+                  onClick: () => openUserProfile(),
+                },
+              });
+              onOpenChange(false);
+              return;
+            }
+          }
+
+          if (body?.error) {
+            toast.error(body.error);
             return;
           }
+
+          toast.error(`Request failed (${error.response.status})`);
+          return;
         }
+
+        console.error(error);
         toast.error(
-          "Unable to import repository. Please check the URl and try again",
+          "Unable to import repository. Please check the URL and try again",
         );
       }
     },

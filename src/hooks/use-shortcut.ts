@@ -11,7 +11,7 @@ interface ShortcutOptions {
 export function useShortcut(options: ShortcutOptions, callback: () => void) {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      const pressedKey = e.key.toLowerCase();
+      const pressedKey = e.key?.toLowerCase();
 
       const match =
         pressedKey === options.key.toLowerCase() &&

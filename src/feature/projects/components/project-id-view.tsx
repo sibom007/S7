@@ -5,14 +5,12 @@ import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { Tab } from "@/components/project-id-tab";
 import { Allotment } from "allotment";
-import "allotment/dist/style.css";
 import { FileExplorer } from "./file-explorer";
 import { FileEditorView } from "../../editor/components/editor-view";
 import { PreviewView } from "./preview-view";
 import { ExportPopover } from "./export-popover";
 
-const MIN_SIDEBAR_WIDTH = 200;
-const MAX_SIDEBAR_WIDTH = 800;
+
 const DEFAULT_SIDEBAR_WIDTH = 350;
 const DEFAULT_MAIN_SIZE = 1000;
 

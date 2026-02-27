@@ -83,30 +83,52 @@ export const ExportPopover = ({ projectId }: ExportPopoverProps) => {
         toast.success("Export started...");
       } catch (error) {
         if (error instanceof HTTPError) {
-          const body = await error.response.json<{ error: string }>();
-          if (body.error?.includes("Pro plan required")) {
-            toast.error("Upgrade to import repositories", {
-              action: {
-                label: "Upgrade",
-                onClick: () => openUserProfile(),
-              },
-            });
-            setOpen(false);
+          let body: { error?: string; code?: string } | null = null;
+
+          try {
+            body = await error.response.json();
+          } catch {}
+
+          const status = error.response.status;
+
+          if (status === 403 && body?.code) {
+            switch (body.code) {
+              case "PRO_REQUIRED":
+                toast.error("Upgrade to import repositories", {
+                  action: {
+                    label: "Upgrade",
+                    onClick: () => openUserProfile(),
+                  },
+                });
+                setOpen(false);
+                return;
+
+              case "GITHUB_NOT_CONNECTED":
+                toast.error(body.error ?? "GitHub account not connected", {
+                  action: {
+                    label: "Connect",
+                    onClick: () => openUserProfile(),
+                  },
+                });
+                setOpen(false);
+
+                return;
+            }
+          }
+
+          if (body?.error) {
+            toast.error(body.error);
             return;
           }
 
-          if (body.error?.includes("GitHub not connected")) {
-            toast.error("GitHub account not connected", {
-              action: {
-                label: "Connect",
-                onClick: () => openUserProfile(),
-              },
-            });
-            setOpen(false);
-            return;
-          }
+          toast.error(`Request failed (${status})`);
+          return;
         }
-        toast.error("Unable to export repository");
+
+        console.error(error);
+        toast.error(
+          "Unable to import repository. Please check the URL and try again",
+        );
       }
     },
   });

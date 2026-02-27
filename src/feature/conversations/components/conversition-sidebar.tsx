@@ -34,6 +34,7 @@ import {
 import ky from "ky";
 import { PastConversationDialog } from "./past-conversation-dialog";
 import { DEFAULT_CONVERSATION_TITLE } from "../constant";
+import { LeftTokens } from "@/feature/projects/components/left-tokens";
 
 export const ConvercationSidebar = ({
   projectId,
@@ -101,6 +102,7 @@ export const ConvercationSidebar = ({
           message: message.text,
         },
       });
+      setInput("");
     } catch {
       toast.error("Message failed to send");
       setInput("");
@@ -189,6 +191,7 @@ export const ConvercationSidebar = ({
               />
             </PromptInputFooter>
           </PromptInput>
+          <LeftTokens />
         </div>
       </div>
     </>

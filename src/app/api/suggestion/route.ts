@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 
 import { auth } from "@clerk/nextjs/server";
-import { openrouter } from "@/lib/ai-models";
+import { AI_MODEL, openrouter } from "@/lib/ai-models";
 
 const suggestionSchema = z.object({
   suggestion: z
@@ -102,7 +102,7 @@ export async function POST(request: Request) {
     .replace("{lineNumber}", lineNumber);
 
   const { output } = await generateText({
-    model: openrouter("openrouter/aurora-alpha"),
+    model: openrouter(AI_MODEL),
     output: Output.object({ schema: suggestionSchema }),
     prompt,
     maxRetries: 0,

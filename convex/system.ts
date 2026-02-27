@@ -2,7 +2,7 @@ import { v } from "convex/values";
 
 import { mutation, query } from "./_generated/server";
 
-const validateInternalKey = (key: string) => {
+export const validateInternalKey = (key: string) => {
   const internalKey = process.env.S7_CONVEX_INTERNAL_KEY;
 
   if (!internalKey) {
