@@ -18,12 +18,14 @@ import { createCreateFolderTool } from "./tools/create-folder";
 import { createRenameFileTool } from "./tools/rename-file";
 import { createDeleteFilesTool } from "./tools/delete-files";
 import { createScrapeUrlsTool } from "./tools/scrape-urls";
+import { AI_MODEL } from "@/lib/ai-models";
 
 interface MessageEvent {
   messageId: Id<"messages">;
   conversationId: Id<"conversations">;
   projectId: Id<"projects">;
   message: string;
+  clerkId: string;
 }
 
 export const processMessage = inngest.createFunction(
@@ -35,7 +37,14 @@ export const processMessage = inngest.createFunction(
         if: "event.data.messageId == async.data.messageId",
       },
     ],
-    onFailure: async ({ event, step }) => {
+    onFailure: async ({ event, step, error }) => {
+      console.log("🚀 ~ error:", error.message);
+      if (
+        error instanceof NonRetriableError &&
+        error.message === "NO_CREDITS"
+      ) {
+        return;
+      }
       const { messageId } = event.data.event.data as MessageEvent;
 
       const internalKey = process.env.S7_CONVEX_INTERNAL_KEY;
@@ -52,10 +61,10 @@ export const processMessage = inngest.createFunction(
     },
   },
   {
-    event: "message/sent",
+    event: "message/send",
   },
   async ({ event, step }) => {
-    const { conversationId, message, messageId, projectId } =
+    const { conversationId, message, messageId, projectId, clerkId } =
       event.data as MessageEvent;
 
     const internalKey = process.env.S7_CONVEX_INTERNAL_KEY;
@@ -74,6 +83,31 @@ export const processMessage = inngest.createFunction(
 
     if (!conversation) {
       throw new NonRetriableError("conversation not Found");
+    }
+
+    const balance = await step.run("get-balance", async () => {
+      return await convex.query(api.auth.getBalanceToken, {
+        internalKey,
+        clerkId,
+      });
+    });
+
+    if (!balance?.credit || balance.credit <= 0) {
+      await step.run("no-credit-message", async () => {
+        await convex.mutation(api.system.updateMessageContent, {
+          internalKey,
+          messageId,
+          content:
+            "You have no credits left. Please add credits to continue using the AI.",
+        });
+      });
+      //  STOP execution WITHOUT triggering onFailure
+      return {
+        success: false,
+        reason: "NO_CREDITS",
+        messageId,
+        conversationId,
+      };
     }
 
     const recentmessages = await step.run("get-resent-message", async () => {
@@ -109,7 +143,7 @@ export const processMessage = inngest.createFunction(
         name: "title-generator",
         system: TITLE_GENERATOR_SYSTEM_PROMPT,
         model: openai({
-          model: "openrouter/aurora-alpha",
+          model: AI_MODEL,
           apiKey: process.env.OPEN_ROUTER_API_KEY,
           baseUrl: "https://openrouter.ai/api/v1",
         }),
@@ -149,7 +183,7 @@ export const processMessage = inngest.createFunction(
       description: "An expert Ai coding assistant",
       system: systemPrompt,
       model: openai({
-        model: "openrouter/aurora-alpha",
+        model: AI_MODEL,
         apiKey: process.env.OPEN_ROUTER_API_KEY,
         baseUrl: "https://openrouter.ai/api/v1",
       }),
@@ -170,20 +204,6 @@ export const processMessage = inngest.createFunction(
       name: "S7-network",
       agents: [codingAgent],
       maxIter: 10,
-      // This is get eror need remove in producaton
-      // router: ({ network }) => {
-      //   const lastResult = network.state.results.at(-1);
-      //   const hasTextResponse = lastResult?.output.some(
-      //     (m) => m.type === "text" && m.role === "assistant",
-      //   );
-      //   const hasToolCalls = lastResult?.output.some(
-      //     (m) => m.type === "tool_call",
-      //   );
-
-      //   if (hasTextResponse && !hasToolCalls) {
-      //     return undefined;
-      //   }
-      // },
 
       router: ({ network }) => {
         const lastResult = network.state.results.at(-1);
@@ -229,6 +249,13 @@ export const processMessage = inngest.createFunction(
           ? textMessage.content
           : textMessage.content.map((c) => c.text).join("");
     }
+
+    await step.run("deduct-credit", async () => {
+      await convex.mutation(api.auth.updateBalanceToken, {
+        internalKey,
+        clerkId,
+      });
+    });
 
     // Update the assistant message with the responce (his also sets status to complete)
     await step.run("update-assistant-message", async () => {

@@ -91,12 +91,13 @@ export const POST = async (request: Request) => {
   });
 
   const event = await inngest.send({
-    name: "message/sent",
+    name: "message/send",
     data: {
       messageId: assistantId,
       conversationId,
       projectId,
       message,
+      clerkId: userId,
     },
   });
 

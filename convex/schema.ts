@@ -65,4 +65,12 @@ export default defineSchema({
   })
     .index("by_project_status", ["projectId", "status"])
     .index("by_conversation", ["conversationId"]),
+  tokens: defineTable({
+    clerkId: v.string(),
+    balance: v.number(),
+    updateAt: v.number(),
+    plan: v.union(v.literal("pro"), v.literal("free")),
+  }).index("by_clerkId", ["clerkId"]),
 });
+
+

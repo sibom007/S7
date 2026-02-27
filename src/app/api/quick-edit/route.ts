@@ -1,4 +1,4 @@
-import { openrouter } from "@/lib/ai-models";
+import { AI_MODEL, openrouter } from "@/lib/ai-models";
 import { firecrawl } from "@/lib/firecrawl";
 import { auth } from "@clerk/nextjs/server";
 
@@ -108,7 +108,7 @@ export async function POST(request: Request) {
       .replace("{instruction}", documentationContext);
 
     const { output } = await generateText({
-      model: openrouter("openrouter/aurora-alpha"),
+      model: openrouter(AI_MODEL),
       output: Output.object({ schema: quickEditSchema }),
       prompt,
       maxRetries: 0,

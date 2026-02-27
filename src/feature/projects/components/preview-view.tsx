@@ -23,7 +23,7 @@ export const PreviewView = ({ projectId }: { projectId: Id<"projects"> }) => {
   const project = useProject(projectId);
   const [showTerminal, setShowTerminal] = useState(true);
 
-  const { status, previewUrl, error, restart, terminalOutput } =
+  const { status, previewUrl, errorMessage, restart, terminalOutput } =
     useWebContainer({
       projectId,
       enabled: true,
@@ -53,7 +53,9 @@ export const PreviewView = ({ projectId }: { projectId: Id<"projects"> }) => {
             </div>
           )}
           {previewUrl && <span className="truncate">{previewUrl}</span>}
-          {!isLoading && !previewUrl && !error && <span>Ready to preview</span>}
+          {!isLoading && !previewUrl && !errorMessage && (
+            <span>Ready to preview</span>
+          )}
         </div>
 
         <Button
@@ -74,11 +76,11 @@ export const PreviewView = ({ projectId }: { projectId: Id<"projects"> }) => {
       <div className="flex-1 min-h-0">
         <Allotment vertical>
           <Allotment.Pane>
-            {error && (
+            {errorMessage && (
               <div className="size-full flex items-center justify-center text-muted-foreground">
                 <div className="flex flex-col items-center gap-2 max-w-md mx-auto text-center">
                   <AlertTriangleIcon className="size-6" />
-                  <p className="text-sm font-medium">{error}</p>
+                  <p className="text-sm font-medium">{errorMessage}</p>
                   <Button size="sm" variant="outline" onClick={restart}>
                     <RefreshCwIcon className="size-4" />
                     Restart
@@ -87,7 +89,7 @@ export const PreviewView = ({ projectId }: { projectId: Id<"projects"> }) => {
               </div>
             )}
 
-            {isLoading && !error && (
+            {isLoading && !errorMessage && (
               <div className="size-full flex items-center justify-center text-muted-foreground">
                 <div className="flex flex-col items-center gap-2 max-w-md mx-auto text-center">
                   <Loader2Icon className="size-6 animate-spin" />

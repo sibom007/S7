@@ -4,7 +4,7 @@ import { useEditor } from "../hooks/use-editor";
 import { FileBreadcrumbs } from "./file-breadcrumbs";
 import { useFile, useUpdateFile } from "@/feature/projects/hooks/use-files";
 import Image from "next/image";
-import { FileIcon } from "lucide-react";
+import { AlertTriangleIcon, FileIcon } from "lucide-react";
 import { CodeEditor } from "./code-editor";
 import { useEffect, useRef } from "react";
 
@@ -60,6 +60,18 @@ export const FileEditorView = ({ projectId }: { projectId: projectId }) => {
                 }, 1500);
               }}
             />
+          </div>
+        )}
+
+        {activeFile?.storageId && (
+          <div className="size-full flex items-center justify-center">
+            <div className="flex flex-col items-center gap-2.5 max-w-md text-center">
+              <AlertTriangleIcon className="size-10 text-yellow-500" />
+              <p className="text-sm">
+                The file is not displayed in the text editor because it is
+                either binary or uses an unsupported text encoding. I
+              </p>
+            </div>
           </div>
         )}
       </div>

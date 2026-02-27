@@ -14,9 +14,19 @@ const requestSchema = z.object({
 });
 
 export async function POST(request: Request) {
-  const { userId } = await auth();
+  const { userId, has } = await auth();
   if (!userId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const hasPro = has({
+    plan: "pro",
+  });
+  if (!hasPro) {
+    return NextResponse.json(
+      { error: "Pro plan required", code: "PRO_REQUIRED" },
+      { status: 403 },
+    );
   }
 
   const body = await request.json();
@@ -28,7 +38,10 @@ export async function POST(request: Request) {
   const githubToken = tokens.data[0]?.token;
   if (!githubToken) {
     return NextResponse.json(
-      { error: "GitHub not connected. Please reconnect your GitHub account" },
+      {
+        error: "GitHub not connected. Please reconnect your GitHub account",
+        code: "GITHUB_NOT_CONNECTED",
+      },
       { status: 401 },
     );
   }
